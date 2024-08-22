@@ -132,7 +132,7 @@ const ReservationSidebar = ({ property, userId }: Props) => {
 
       <div
         onClick={performBooking}
-        className="w-full mb-6 py-6 text-center text-white bg-airbnb hover:bg-airbnbDark rounded-xl"
+        className="w-full mb-6 py-6 text-center text-white bg-roomie hover:bg-roomieDark rounded-xl"
       >
         Book
       </div>

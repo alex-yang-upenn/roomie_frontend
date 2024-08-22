@@ -28,7 +28,7 @@ const ContactButton = ({ userId, landlordId }: Props) => {
   return (
     <div
       onClick={startConversation}
-      className="py-4 px-6 cursor-pointer bg-airbnb hover:bg-airbnbDark text-white rounded-xl transition"
+      className="py-4 px-6 cursor-pointer bg-roomie hover:bg-roomieDark text-white rounded-xl transition"
     >
       Contact
     </div>

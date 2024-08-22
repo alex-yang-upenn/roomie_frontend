@@ -18,7 +18,7 @@ const Conversation = ({ userId, conversation }: Props) => {
 
       <p
         onClick={() => router.push(`/inbox/${conversation.id}`)}
-        className="text-airbnbDark"
+        className="text-roomieDark"
       >
         Go to conversation
       </p>

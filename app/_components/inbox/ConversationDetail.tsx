@@ -20,7 +20,7 @@ const ConversationDetail = ({ userId, token, conversation, messages }: Props) =>
   
   const [newMessage, setNewMessage] = useState("")
   const [realtimeMessages, setRealtimeMessages] = useState<MessageType[]>([])
-  const messagesDiv = useRef(null)
+  const messagesDiv = useRef<HTMLDivElement>(null)
 
   const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(`${process.env.NEXT_PUBLIC_WS_HOST}/ws/${conversation.id}/?token=${token}`, {
       share: false,

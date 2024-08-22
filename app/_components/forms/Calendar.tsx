@@ -1,8 +1,7 @@
 'use client'
 
 import { DateRange, Range, RangeKeyDict } from "react-date-range"
-import config from "../../../tailwind.config"
-import resolveConfig from "tailwindcss/resolveConfig"
+import { roomieDark } from "@/app/_libs/colors"
 import React from "react"
 import "react-date-range/dist/styles.css"
 import "react-date-range/dist/theme/default.css"
@@ -14,13 +13,10 @@ type Props = {
 }
 
 const Calendar = ({ value, onChange, bookedDates }: Props) => {
-  const fullConfig = resolveConfig(config)
-  const airbnbDark = fullConfig.theme.colors["airbnbDark"]
-
   return (
     <DateRange 
       className="w-full border border-gray-400 rounded-xl mb-4" 
-      rangeColors={[airbnbDark]}
+      rangeColors={[roomieDark]}
       ranges={[value]}
       date={new Date()}
       onChange={onChange}

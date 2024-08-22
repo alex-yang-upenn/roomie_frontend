@@ -230,7 +230,7 @@ const AddPropertyModal = (props: Props) => {
           
           {errors.map((error, index) => {
             return (
-              <div key={index} className="p-5 mb-4 bg-airbnb text-white rounded-xl opacity-80">
+              <div key={index} className="p-5 mb-4 bg-roomie text-white rounded-xl opacity-80">
                 {error}
               </div>
             )

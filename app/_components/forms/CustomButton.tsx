@@ -9,7 +9,7 @@ type Props = {
 const CustomButton = ({ label, onClick, className }: Props) => {
   return (
     <div 
-      className={clsx(className, "w-full py-4 bg-airbnb hover:bg-airbnbDark text-white text-center rounded-xl transition cursor-pointer")} 
+      className={clsx(className, "w-full py-4 bg-roomie hover:bg-roomieDark text-white text-center rounded-xl transition cursor-pointer")} 
       onClick={onClick}
     >
       {label}

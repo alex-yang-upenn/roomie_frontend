@@ -1,8 +1,4 @@
-import config from "../tailwind.config"
-import resolveConfig from "tailwindcss/resolveConfig"
-
-const fullConfig = resolveConfig(config)
-const airbnbDark = fullConfig.theme.colors["airbnbDark"]
+import { roomieDark } from "./_libs/colors"
 
 const Loading = () => {
   return (
@@ -17,7 +13,7 @@ const Loading = () => {
         <defs>
           <linearGradient id="gradientColors" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="100%" stopColor={airbnbDark} />
+            <stop offset="100%" stopColor={roomieDark} />
             <animateTransform 
               attributeName="gradientTransform" 
               type="rotate" 
