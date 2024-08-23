@@ -26,7 +26,7 @@ const PropertyDetailPage = async ({ params } : { params : {id: string} }) => {
           </h1>
 
           <span className="mb-6 block text-lg text-gray-600">
-            {property.guests} guests - {property.bedrooms} bedrooms - {property.bathrooms} bathroom
+            {property.guests} guest(s) - {property.bedrooms} bedroom(s) - {property.bathrooms} bathroom(s)
           </span>
 
           <hr />
@@ -56,7 +56,10 @@ const PropertyDetailPage = async ({ params } : { params : {id: string} }) => {
           </p>
         </div>
 
-        <ReservationSidebar property={property} userId={userId}/>
+        <ReservationSidebar
+          property={property}
+          userId={userId}
+        />
       </div>
     </main>
     

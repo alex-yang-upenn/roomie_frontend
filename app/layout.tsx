@@ -3,6 +3,7 @@ import LoginModal from "./_components/modals/LoginModal";
 import SignupModal from "./_components/modals/SignupModal";
 import SearchModal from "./_components/modals/SearchModal";
 import AddPropertyModal from "./_components/modals/AddPropertyModal";
+import BookingNotificationModal from "./_components/modals/BookingNotificationModal";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -31,6 +32,7 @@ export default function RootLayout({
         <LoginModal />
         <SignupModal />
         <AddPropertyModal />
+        <BookingNotificationModal />
       </body>
     </html>
   );

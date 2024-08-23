@@ -2,21 +2,27 @@
 
 import Calendar from "../forms/Calendar"
 import useLoginModal from "@/app/_libs/useLoginModal"
+import useBookingNotificationModal from "@/app/_libs/useBookingNotification"
 import apiService from "@/app/_libs/apiService"
 import { Range } from "react-date-range"
 import { differenceInDays, eachDayOfInterval } from "date-fns"
 import format from "date-fns/format"
+import clsx from "clsx"
+import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 
 const initialDateRange = {
   startDate: new Date(),
-  endDate: new Date(),
+  endDate: new Date(new Date().setDate(new Date().getDate() + 1)),
   key: "selection"
 }
 
 export type PropertyReservationType = {
   id: string
+  title: string
   guests: number
+  bedrooms: number
+  bathrooms: number
   price_per_night: number
 }
 
@@ -25,14 +31,16 @@ type Props = {
   property: PropertyReservationType
 }
 
-const ReservationSidebar = ({ property, userId }: Props) => {
+const ReservationSidebar = async ({ property, userId }: Props) => {
   const loginModal = useLoginModal()
+  const bookingNotificationModal = useBookingNotificationModal()
+  const router = useRouter()
 
+  const [disabled, setDisabled] = useState<boolean>(true)
   const [fee, setFee] = useState<number>(0)
   const [nights, setNights] = useState<number>(1)
   const [totalPrice, setTotalPrice] = useState<number>(0)
   const [dateRange, setDateRange] = useState<Range>(initialDateRange)
-  const [minDate, setMinDate] = useState<Date>(new Date())
   const [bookedDates, setBookedDates] = useState<Date[]>([])
   const [guests, setGuests] = useState<string>("1")
   const guestsRange = Array.from({ length: property.guests }, (_, index) => index + 1)
@@ -46,6 +54,7 @@ const ReservationSidebar = ({ property, userId }: Props) => {
     }
 
     setDateRange({...dateRange, startDate: newStartDate, endDate: newEndDate})
+    setDisabled(false)
   }
 
   const performBooking = async () => {
@@ -61,35 +70,53 @@ const ReservationSidebar = ({ property, userId }: Props) => {
         const response = await apiService.post(`/api/properties/${property.id}/book/`, formData)
 
         if (response.success) {
-          console.log("Booking successful")
+          bookingNotificationModal.setInfo({
+            success: true,
+            totalPrice: totalPrice,
+            startDate: dateRange.startDate,
+            endDate: dateRange.endDate,
+            propertyName: property.title,
+            guests: parseInt(guests),
+            bathrooms: property.bathrooms,
+            bedrooms: property.bedrooms
+          })
+          router.push("/myreservations")
         } else {
-          console.log("Something went wrong")
+          bookingNotificationModal.setInfo({
+            ...bookingNotificationModal.info,
+            success: false,
+          })
+          router.push("/")
         }
+        bookingNotificationModal.open()
       }
     } else {
       loginModal.open()
     }
   }
 
-  const getReservations = async () => {
-    const reservations = await apiService.get(`/api/properties/${property.id}/reservations/`)
-
-    let dates: Date[] = []
-
-    reservations.forEach((reservation: any) => {
-      const range = eachDayOfInterval({
-        start: new Date(reservation.start_date),
-        end: new Date(reservation.end_date)
-      })
-      dates = [...dates, ...range]
-    })
-
-    setBookedDates(dates)
-  }
-
   useEffect(() => {
+    const getReservations = async () => {
+      const reservations = await apiService.get(`/api/properties/${property.id}/reservations/`)
+
+      let dates: Date[] = []
+
+      reservations.forEach((reservation: any) => {
+        const range = eachDayOfInterval({
+          start: new Date(reservation.start_date),
+          end: new Date(reservation.end_date)
+        })
+        dates = [...dates, ...range]
+      })
+
+      setBookedDates(dates)
+    }
+
     getReservations()
+  }, [])
     
+
+  useEffect(() => {    
     if (dateRange.startDate && dateRange.endDate) {
       const dayCount = differenceInDays(dateRange.endDate, dateRange.startDate)
 
@@ -130,12 +157,15 @@ const ReservationSidebar = ({ property, userId }: Props) => {
         </select>
       </div>
 
-      <div
+      <button
         onClick={performBooking}
-        className="w-full mb-6 py-6 text-center text-white bg-roomie hover:bg-roomieDark rounded-xl"
+        className={clsx("w-full mb-6 py-6 text-center text-white rounded-xl",
+                        {"bg-roomie hover:bg-roomieDark hover:cursor-pointer": !disabled,
+                         "bg-gray-300 hover:cursor-not-allowed": disabled})}
+        disabled={disabled}
       >
         Book
-      </div>
+      </button>
 
       <div className="mb-4 flex justify-between align-center">
         <p>${property.price_per_night} * {nights} night(s)</p>
