@@ -82,7 +82,7 @@ const ConversationDetail = ({ userId, token, conversation, messages }: Props) =>
           <div 
             key={index}
             className={clsx("w-[80%] py-4 px-6 rounded-xl", 
-                            {"ml-[20%] bg-blue-200" : message.created_by.name == myUser?.name, "bg-gray-200": message.name != myUser?.name})}
+                            {"ml-[20%] bg-blue-200" : message.created_by.name === myUser?.name, "bg-gray-200": message.created_by.name === otherUser?.name})}
           >
             <p className="font-bold text-gray-500">{message.created_by.name}</p>
             <p>{message.body}</p>
@@ -93,7 +93,7 @@ const ConversationDetail = ({ userId, token, conversation, messages }: Props) =>
           <div 
             key={index}
             className={clsx("w-[80%] py-4 px-6 rounded-xl", 
-                            {"ml-[20%] bg-blue-200" : message.created_by.name == myUser?.name, "bg-gray-200": message.name != myUser?.name})}
+                            {"ml-[20%] bg-blue-200" : message.created_by.name === myUser?.name, "bg-gray-200": message.created_by.name === otherUser?.name})}
           >
             <p className="font-bold text-gray-500">{message.created_by.name}</p>
             <p>{message.body}</p>

@@ -1,6 +1,7 @@
 'use client'
 
 import Calendar from "../forms/Calendar"
+import Loading from "@/app/loading"
 import useLoginModal from "@/app/_libs/useLoginModal"
 import useBookingNotificationModal from "@/app/_libs/useBookingNotification"
 import apiService from "@/app/_libs/apiService"
@@ -31,12 +32,14 @@ type Props = {
   property: PropertyReservationType
 }
 
-const ReservationSidebar = async ({ property, userId }: Props) => {
+const ReservationSidebar = ({ property, userId }: Props) => {
   const loginModal = useLoginModal()
   const bookingNotificationModal = useBookingNotificationModal()
   const router = useRouter()
 
+  const [loading, setLoading] = useState<boolean>(true)
   const [disabled, setDisabled] = useState<boolean>(true)
+
   const [fee, setFee] = useState<number>(0)
   const [nights, setNights] = useState<number>(1)
   const [totalPrice, setTotalPrice] = useState<number>(0)
@@ -58,6 +61,7 @@ const ReservationSidebar = async ({ property, userId }: Props) => {
   }
 
   const performBooking = async () => {
+    setLoading(true)
     if (userId) {
       if (dateRange.startDate && dateRange.endDate) {
         const formData = new FormData()
@@ -93,6 +97,7 @@ const ReservationSidebar = async ({ property, userId }: Props) => {
     } else {
       loginModal.open()
     }
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -111,8 +116,8 @@ const ReservationSidebar = async ({ property, userId }: Props) => {
 
       setBookedDates(dates)
     }
-
     getReservations()
+    setLoading(false)
   }, [])
     
 
@@ -136,51 +141,59 @@ const ReservationSidebar = async ({ property, userId }: Props) => {
 
   return (
     <aside className="mt-4 p-6 col-span-2 rounded-xl border border-gray-300 shadow-xl">
-      <h2 className="mb-5">${property.price_per_night} per night</h2>
+      {
+        loading ? (
+          <Loading />
+        ) : (
+          <>
+            <h2 className="mb-5">${property.price_per_night} per night</h2>
 
-      <Calendar
-        value={dateRange}
-        bookedDates={bookedDates}
-        onChange={(value) => _setDateRange(value.selection)} 
-      />
+            <Calendar
+              value={dateRange}
+              bookedDates={bookedDates}
+              onChange={(value) => _setDateRange(value.selection)} 
+            />
 
-      <div className="mb-6 p-3 border border-gray-400 rounded-xl">
-        <label className="block font-bold text-xs">Guests</label>
-        <select 
-          value={guests}
-          onChange={(e) => setGuests(e.target.value)}
-          className="w-full -ml-1 text-xm"
-        >
-          {guestsRange.map((number) =>
-            <option key={number} value={number}>{number}</option>
-          )}
-        </select>
-      </div>
+            <div className="mb-6 p-3 border border-gray-400 rounded-xl">
+              <label className="block font-bold text-xs">Guests</label>
+              <select 
+                value={guests}
+                onChange={(e) => setGuests(e.target.value)}
+                className="w-full -ml-1 text-xm"
+              >
+                {guestsRange.map((number) =>
+                  <option key={number} value={number}>{number}</option>
+                )}
+              </select>
+            </div>
 
-      <button
-        onClick={performBooking}
-        className={clsx("w-full mb-6 py-6 text-center text-white rounded-xl",
-                        {"bg-roomie hover:bg-roomieDark hover:cursor-pointer": !disabled,
-                         "bg-gray-300 hover:cursor-not-allowed": disabled})}
-        disabled={disabled}
-      >
-        Book
-      </button>
+            <button
+              onClick={performBooking}
+              className={clsx("w-full mb-6 py-6 text-center text-white rounded-xl",
+                              {"bg-roomie hover:bg-roomieDark hover:cursor-pointer": !disabled,
+                              "bg-gray-300 hover:cursor-not-allowed": disabled})}
+              disabled={disabled}
+            >
+              Book
+            </button>
 
-      <div className="mb-4 flex justify-between align-center">
-        <p>${property.price_per_night} * {nights} night(s)</p>
-        <p>${property.price_per_night * nights}</p>
-      </div>
+            <div className="mb-4 flex justify-between align-center">
+              <p>${property.price_per_night} * {nights} night(s)</p>
+              <p>${property.price_per_night * nights}</p>
+            </div>
 
-      <div className="mb-4 flex justify-between align-center">
-        <p>Roomie fee</p>
-        <p>${fee}</p>
-      </div>
+            <div className="mb-4 flex justify-between align-center">
+              <p>Roomie fee</p>
+              <p>${fee}</p>
+            </div>
 
-      <div className="mt-4 flex justify-between align-center font-bold">
-        <p>Total</p>
-        <p>${totalPrice}</p>
-      </div>
+            <div className="mt-4 flex justify-between align-center font-bold">
+              <p>Total</p>
+              <p>${totalPrice}</p>
+            </div>
+          </>
+        )
+      }
     </aside>
   )
 }
